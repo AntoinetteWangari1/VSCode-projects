@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realtime Location Tracker</title>
+
+
+    <!-- Leaflet css-->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+
+    <style>
+        body{
+            margin: 0;
+            padding: 0;
+        }
+
+        #map{
+            width: 100%;
+            height: 100vh;
+        }
+
+
+    </style>
+
+
+
+
+
+
+
+</head>
+
+<body>
+    <div id = "map"></div>
+</body>
+</html>
+
+
+<!--leaflet js-->
+
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+<script>
+    //Map initialization
+    var map= L.map('map').setView([-1.0911971,37.006846], 10);
+
+    //osm layer
+    var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+        attribution: '&copy; <a href= "https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+
+    });
+    osm.addTo(map);
+
+    if(!navigator.geolocation){
+        console.log("Your browser does not support geolocation feature!")
+    } else{
+        setInterval(()=>{
+            navigator.geolocation.getCurrentPosition(getPosition)
+
+        },5000);
+    }
+
+
+    var marker, circle
+    function getPosition(position){
+        console.log(position)
+        var lat= position.coords.latitude
+        var longitude = position.coords.longitude
+        var accuracy = position.coords.accuracy
+
+        if(marker){
+            map.removeLayer(marker)
+        }
+        if(circle){
+            map.removeLayer(circle)
+        }
+
+        marker1= L.marker([-1.095281, 37.013477]).addTo(map)
+        marker2= L.marker([-1.094659, 37.014237]).addTo(map)
+        marker3= L.marker([-1.096227, 37.012904]).addTo(map)
+        marker4= L.marker([-1.093842, 37.013856]).addTo(map)
+        marker4= L.marker([-1.092995, 37.013725]).addTo(map)
+        marker5= L.marker([-1.091835, 37.013725]).addTo(map)
+
+
+        marker = L.marker([lat, longitude])
+        circle = L.circle([lat, longitude], {radius:accuracy})
+
+        var featureGroup = L.featureGroup([marker,circle]).addTo(map)
+
+        map.fitBounds(featureGroup.getBounds())
+
+
+        console.log("Your coordinate is: Lat:"+ lat , "Accuracy:"+accuracy, "Longitude:" +longitude)
+    }
+
+</script>
